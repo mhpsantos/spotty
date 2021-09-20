@@ -84,9 +84,9 @@ class YoutubeController extends Controller
             foreach ($tracks as $track) {
                 YoutubeController::insertToPlaylist(YoutubeController::getYoutubeVideoId($track), $playlistId);
             }
-            print_r("convertido com sucesso");
+            return redirect('/')->with('status', "Convertido com sucesso.");
         } catch (\Exception $e) {
-            print_r($e);
+            return redirect('/')->with('error', $e);
         }
     }
 }

@@ -4,8 +4,6 @@
 @endphp
 
 @extends('layouts.header')
-<script>
-</script>
 <style>
         label {
             cursor: pointer;
@@ -21,6 +19,10 @@
 </style>
 @section('content')
 <div class=" text-center">
+    <div class="d-flex justify-content-center">
+        <div class="spinner-grow text-success" style="display: none" id="spinner" role="status">
+        </div>
+    </div>
     <h4 class="my-4">Choose a playlist</h4>
     <form action="#" method="post">
         @csrf
@@ -36,8 +38,8 @@
             @endforeach 
             <div class="my-5 container text-center">
                 <input class="form-control text-center mx-auto my-3" placeholder="New Playlist Name" style="width: 300px" type="text" name="newPlaylistName" id="newPlaylistName">
-                <button class="btn btn-primary mx-2" formaction="{{url('spotifytodeezer')}}">To Deezer</button>
-                <button class="btn btn-danger mx-2" formaction="{{url('spotifytoyoutube')}}">To YouTube</button>
+                <button class="btn btn-primary mx-2" formaction="{{url('spotifytoyoutube')}}" onclick="showSpinner()">To Deezer</button>
+                <button class="btn btn-danger mx-2" formaction="{{url('spotifytoyoutube')}}" onclick="showSpinner()">To YouTube</button>
             </div>
         </div>
     </form>

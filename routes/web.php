@@ -13,7 +13,7 @@ Route::view('/', 'home');
 Route::view('authenticated', 'authenticated');
 
 Route::get('test', function () {
-    Youtube::insertToPlaylist('3rkJ3L5Ce80','PLQ5A-hEBsss87rMXGXUk4x6Lx6DUXg44g');
+    return redirect('/')->with('status', "Convertido com sucesso");;
 });
 
 Route::get('fromspotify', function () {

@@ -54,9 +54,9 @@ class DeezerController extends Controller
             $client = new Client;
             $response = $client->request('POST', "https://api.deezer.com/playlist/$playlistId/tracks&songs=$newTracks&access_token=$deezer_api_token");
     
-            print_r($response->getBody()->getContents());
+            return redirect('/')->with('status', "Convertido com sucesso.");
         } catch (\Exception $e) {
-            return $e;
+            return redirect('/')->with('error', $e);
         }
     }
 
