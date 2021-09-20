@@ -20,11 +20,11 @@
         }
 </style>
 @section('content')
-<div class="container text-center">
+<div class=" text-center">
     <h4 class="my-4">Choose a playlist</h4>
     <form action="#" method="post">
         @csrf
-        <div class="container text-center">
+        <div class="text-center">
             @foreach (Spotify::getPlaylists() as $item)
                 <span class="">
                     <input class="visually-hidden" value="{{$item['id']}}" type="radio" name="playlistId" id="{{$item['name']}}">
@@ -33,7 +33,6 @@
                         <div class="text-truncate m-1" style="width: 150px">{{$item['name']}}</div>
                     </label>
                 </span>
-                {{-- <input type="image" id="playlistId" onclick="getValue()" value="{{$item['id']}}" src="{{$item['images'][0]->url}}" width="150px">   --}}
             @endforeach 
             <div class="my-5 container text-center">
                 <input class="form-control text-center mx-auto my-3" placeholder="New Playlist Name" style="width: 300px" type="text" name="newPlaylistName" id="newPlaylistName">

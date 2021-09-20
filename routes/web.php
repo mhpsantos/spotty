@@ -5,15 +5,24 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SpotifyController as Spotify;
 use App\Http\Controllers\DeezerController as Deezer;
+use App\Http\Controllers\YoutubeController as Youtube;
 use Illuminate\Support\Facades\Cache;
 
-Route::view('test', 'test');
+Route::view('/', 'home');
 
 Route::view('authenticated', 'authenticated');
 
-Route::view('fromspotify', 'fromspotify');
+Route::get('test', function () {
+    Youtube::insertToPlaylist('3rkJ3L5Ce80','PLQ5A-hEBsss87rMXGXUk4x6Lx6DUXg44g');
+});
 
-Route::view('/', 'home');
+Route::get('fromspotify', function () {
+    if (Spotify::isLoggedIn()){
+        return view('fromspotify');
+    }else{
+        return redirect('spotify/auth');;
+    }
+});
 
 Route::get('deezer/auth', function (Request $request) {
     
@@ -36,6 +45,15 @@ Route::get('deezer/code', function (Request $request) {
     return redirect('/');
 });
 
+
+Route::get('spotify/auth', function () {
+    $client_id = config('spotify.client_id');
+    $redirect_uri = config('spotify.redirect_uri');
+    $scopes = 'user-read-private playlist-read-private playlist-modify-private';
+
+    return redirect("https://accounts.spotify.com/authorize?client_id=$client_id&redirect_uri=$redirect_uri&scope=$scopes&response_type=code");
+    
+});
 
 Route::get("spotify/code", function (Request $request) {
     
@@ -61,13 +79,36 @@ Route::get("spotify/code", function (Request $request) {
     return redirect("/");
 });
 
-Route::get('spotify/auth', function () {
-    $client_id = config('spotify.client_id');
-    $redirect_uri = config('spotify.redirect_uri');
-    $scopes = 'user-read-private playlist-read-private playlist-modify-private';
+Route::get('youtube/auth', function () {
+    $client_id = config('youtube.client_id');
+    $redirect_uri = config('youtube.redirect_uri');
+    $scopes = 'https://www.googleapis.com/auth/youtube';
 
-    return redirect("https://accounts.spotify.com/authorize?client_id=$client_id&redirect_uri=$redirect_uri&scope=$scopes&response_type=code");
-    
+    return redirect("https://accounts.google.com/o/oauth2/auth?client_id=$client_id&redirect_uri=$redirect_uri&scope=$scopes&response_type=code&access_type=offline");
+});
+
+Route::get('youtube/code', function (Request $request) {
+
+    $body = [
+        'grant_type' => 'authorization_code',
+        'redirect_uri' => config('youtube.redirect_uri'),
+        'client_id' => config('youtube.client_id'),
+        'client_secret' => config('youtube.client_secret'),
+        'code' => $request->code,
+    ];
+
+    $client = new Client;
+
+    $response = $client->request('POST', "https://accounts.google.com/o/oauth2/token",[
+        'form_params' => $body,
+        'allow_redirects' => true,
+    ]);
+
+    Cache::add('youtube_access_token', json_decode($response->getBody()->getContents())->access_token, 3600);
+
+    return redirect('/');
 });
 
 Route::post('spotifytodeezer', [Deezer::class,'convertFromSpotify']);
+
+Route::post('spotifytoyoutube', [Youtube::class,'convertFromSpotify']);
