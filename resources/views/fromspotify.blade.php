@@ -1,6 +1,5 @@
 @php
-    use App\Http\Controllers\SpotifyController as Spotify;
-    use App\Http\Controllers\DeezerController as Deezer;
+    use App\Http\Repository\Spotify\Library\LibraryRepository as SpotifyLibrary;
 @endphp
 
 @extends('layouts.header')
@@ -27,7 +26,7 @@
     <form action="#" method="post">
         @csrf
         <div class="text-center">
-            @foreach (Spotify::getPlaylists() as $item)
+            @foreach (SpotifyLibrary::getPlaylists() as $item)
                 <span class="">
                     <input class="visually-hidden" value="{{$item['id']}}" type="radio" name="playlistId" id="{{$item['name']}}">
                     <label class="m-1 p-3 bg-success rounded-3" for="{{$item['name']}}">
